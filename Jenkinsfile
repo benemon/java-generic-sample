@@ -38,12 +38,19 @@ pipeline {
             }
         }
         stage('Deploy Container') {
-            dc = openshift.selector("dc", "java")
-            dc.rollout().latest()
-            timeout(10) {
-              dc.rollout().status("-w")
-            } 
-       }
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject() {
+                            dc = openshift.selector("dc", "java")
+                            dc.rollout().latest()
+                            timeout(10) {
+                                dc.rollout().status("-w")
+                            }
+                        }
+                    }
 
+                }
+            }
     }
 }
