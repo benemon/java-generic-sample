@@ -30,7 +30,6 @@ pipeline {
                            artifactDir: "ocp"
             }
         }
-
         stage('Create Container') {
             steps {
                 createImage name: "java",
@@ -38,6 +37,13 @@ pipeline {
                         
             }
         }
+        stage('Deploy Container') {
+            dc = openshift.selector("dc", "java")
+            dc.rollout().latest()
+            timeout(10) {
+              dc.rollout().status("-w")
+            } 
+       }
 
     }
 }
