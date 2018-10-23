@@ -1,3 +1,5 @@
+@Library('reference-steps') _
+
 pipeline {
 
     // logrotate on builds so we don't fill up our history
@@ -8,11 +10,6 @@ pipeline {
     // it's often easiest to define a global agent for the entire build
     agent {
         label 'maven'
-    }
-
-    parameters {
-        string(defaultValue: 'binary', description: 'Build Strategy used to create the image - binary, s2i, dockerfile. Defaults to binary.', name: 'BUILD_STRATEGY')
-        string(defaultValue: 'https://quay.io/', description: 'Location of the staging registry between OCP environments', name: 'STAGING_REGISTRY')
     }
 
     stages {
@@ -27,16 +24,20 @@ pipeline {
                 }
             }
         }
-        stage('Container Build') {
+        stage('Maven Build') {
             steps {
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject() {
-                            openshift.startBuild("java", "--follow")
-                        }
-                    }
-                }
+                buildMaven name: "java",
+                           artifactDir: "ocp"
             }
         }
+
+        stage('Create Container') {
+            steps {
+                createImage name: "java",
+                            artifactDir: "ocp"
+                        
+            }
+        }
+
     }
 }
