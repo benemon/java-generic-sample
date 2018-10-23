@@ -37,6 +37,13 @@ pipeline {
                         
             }
         }
+        stage('Wait for Deployment Approval') {
+            steps {
+                timeout(time:15, unit:'MINUTES') {
+                    input message: "Approve Deployment?", ok: "Deploy!"
+                }
+            }
+        }
         stage('Deploy Container') {
             steps {
                 script {
