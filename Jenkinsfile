@@ -27,7 +27,8 @@ pipeline {
         stage('Maven Build') {
             steps {
                 buildMaven name: "java",
-                           artifactDir: "ocp"
+                           artifactDir: "ocp",
+                           mavenOpts: "-D skipTests=true"
             }
         }
         stage('Create Container') {
@@ -39,25 +40,13 @@ pipeline {
         }
         stage('Wait for Deployment Approval') {
             steps {
-                timeout(time:15, unit:'MINUTES') {
-                    input message: "Approve Deployment?", ok: "Deploy!"
-                }
+                getApproval name: "java",
+                            waitMinutes: "15"
             }
         }
         stage('Deploy Container') {
             steps {
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject() {
-                            dc = openshift.selector("dc", "java")
-                            dc.rollout().latest()
-                            timeout(10) {
-                                dc.rollout().status("-w")
-                            }
-                        }
-                    }
-
-                }
+                deployImage name: "java"
             }
         }
     }
