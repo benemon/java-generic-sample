@@ -29,12 +29,7 @@ pipeline {
         }
         stage('Container Build') {
             steps {
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject() {
-                            openshift.startBuild("java", "--follow")
-                        }
-                    }
+                sh { 'mvn clean fabric8:deploy -Popenshift' }
                 }
             }
         }
