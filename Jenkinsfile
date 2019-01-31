@@ -29,7 +29,7 @@ pipeline {
         }
         stage('Container Build') {
             steps {
-                sh { 'mvn clean fabric8:deploy -Popenshift' }
+                sh 'mvn clean fabric8:deploy -Popenshift'
                 }
             }
         }
