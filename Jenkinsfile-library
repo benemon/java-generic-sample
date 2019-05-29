@@ -1,6 +1,6 @@
 #!groovy
 
-@Library('jenkins-example-library')
+@Library('jenkins-example-library') _
 
 javaPipeline agent: 'maven',
              jobName: 'java-generic-sample',
