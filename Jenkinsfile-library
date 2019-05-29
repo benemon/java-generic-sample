@@ -1,0 +1,9 @@
+#!groovy
+
+@Library('jenkins-example-library')
+
+javaPipeline agent: 'maven',
+             jobName: 'java-generic-sample',
+             buildStrategy: 'source',
+             stagingRegistry: 'quay.io'
+             
