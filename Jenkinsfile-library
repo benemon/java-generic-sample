@@ -4,7 +4,7 @@
 
 javaPipeline agent: 'maven',
              jobName: 'java-generic-sample',
-             jobType: 'maven'
+             jobType: 'maven',
              buildStrategy: 'source',
              stagingRegistry: 'quay.io'
              
